@@ -98,4 +98,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🙋 Author
 
-Built by **Liêm**, assisted by ChatGPT.
+Built by **Liem**, assisted by Github Copilot.
