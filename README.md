@@ -1,4 +1,4 @@
-# Social Post Interaction Extractor (Educational Use)
+# Public Posts Engagement Crawler (Educational Use)
 
 This is a Python script for extracting interaction metrics (like, comment, share) from a list of public social media post URLs using browser automation. It is designed for **personal or educational** use.
 
