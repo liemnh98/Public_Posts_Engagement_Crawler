@@ -8,7 +8,7 @@ This is a Python script for extracting interaction metrics (like, comment, share
 
 ## 📦 Requirements
 
-- Python 3.8+
+- Python 3.9+
 - Google Chrome browser
 - Matching [ChromeDriver](https://sites.google.com/chromium.org/driver/)
 - Windows OS (default)
@@ -19,22 +19,22 @@ This is a Python script for extracting interaction metrics (like, comment, share
 
 ### 1. Clone this repository
 ```bash
-git clone https://github.com/yourusername/social-post-interaction-extractor.git
-cd social-post-interaction-extractor
+git clone https://github.com/liemnh98/Public_Posts_Engagement_Crawler.git
+cd Public_Posts_Engagement_Crawler
 ```
 
 ### 2. Create and activate a virtual environment
 
 #### On Windows
 ```bash
-python -m venv venv
-venv\Scripts\activate
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
 #### On macOS/Linux
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 ### 3. Install the dependencies
@@ -60,7 +60,7 @@ https://www.example.com/post/xyz456
 Update this variable in the script if needed:
 
 ```python
-input_path = 'data/dim_posts_test.csv'
+input_path = 'data/input_demo.csv'
 ```
 
 ### Output File
@@ -76,7 +76,7 @@ The output will be a CSV file containing:
 Adjust output location here:
 
 ```python
-output_path = 'data/fct_posts_results__v2025.06.15v2.csv'
+output_path = 'data/output_demo.csv'
 ```
 
 ---
@@ -85,7 +85,7 @@ output_path = 'data/fct_posts_results__v2025.06.15v2.csv'
 
 Once everything is set:
 ```bash
-python fb_interaction_crawler_v2025.06.17v1.py
+python public_post_engagament_crawler.py
 ```
 
 ---
