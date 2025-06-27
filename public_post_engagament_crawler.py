@@ -74,12 +74,36 @@ def fb_broad(soup):
                 tmp_share = text
     return tmp_like, tmp_comment, tmp_share
 
+def fb_photo(soup):
+    """Extract like, comment, share for Facebook photo posts."""
+    tmp_like, tmp_comment, tmp_share = '', '', ''
+    main_div = soup.find('div', class_='x1n2onr6')
+    if main_div:
+        # Extract like count (same logic as fb_broad)
+        like_spans = main_div.find_all('span', class_='x135b78x')
+        if like_spans:
+            tmp_like = like_spans[-1].get_text(strip=True)
+
+        # Extract comment and share counts
+        html_span_class = 'html-span xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x1hl2dhg x16tdsg8 x1vvkbs xkrqix3 x1sur9pj'
+        html_spans = main_div.find_all('span', class_= lambda c: c == html_span_class)
+
+        # Assuming the first span is comment and the second is share
+        if len(html_spans) > 0:
+            tmp_comment = html_spans[0].get_text(strip=True)
+        if len(html_spans) > 1:
+            tmp_share = html_spans[1].get_text(strip=True)
+
+    return tmp_like, tmp_comment, tmp_share
+
 def process_link(driver, link):
     driver.get(link)
     time.sleep(random.uniform(3, 5))
     soup = BeautifulSoup(driver.page_source, 'html5lib')
     if link.startswith('https://www.facebook.com/reel/'):
         tmp_like, tmp_comment, tmp_share = fb_reel(soup)
+    elif '/photo/' in link: # Check for photo links
+        tmp_like, tmp_comment, tmp_share = fb_photo(soup)
     else:
         tmp_like, tmp_comment, tmp_share = fb_broad(soup)
     ldp = driver.current_url
@@ -109,12 +133,15 @@ def parse_number(text):
 def main():
     urls = pd.read_csv(input_path, encoding='utf-8', header=0, usecols=['link_aired'])
     urls = urls[urls['link_aired'].str.contains('facebook.com', na=False)]
+    
+    # Initialize Chrome driver
     driver = init_chrome_driver()
     results = []
     total = len(urls)
     success_count = 0
     error_count = 0
     bar_len = 50
+    processed_count = 0 # Initialize counter for progress
     print(f"Total links to process: {total}")
     for idx, row in urls.iterrows():
         link = row['link_aired']
@@ -126,11 +153,12 @@ def main():
             res = {'link': link, 'success': False, 'error': str(e)}
             error_count += 1
         results.append(res)
-        percent = (idx + 1) / total
+        processed_count += 1 # Increment counter
+        percent = processed_count / total # Use counter for percentage
         filled_len = int(bar_len * percent)
         bar = '=' * filled_len + '-' * (bar_len - filled_len)
         print(
-            f"[{bar}] {percent:.0%} | {idx+1}/{total} | Success: {success_count} | Error: {error_count}",
+            f"[{bar}] {percent:.0%} | {processed_count}/{total} | Success: {success_count} | Error: {error_count}",
             end='\r'
         )
     print()  # Newline after progress
