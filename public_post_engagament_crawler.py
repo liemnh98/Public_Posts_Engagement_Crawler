@@ -133,17 +133,16 @@ def parse_number(text):
 def main():
     urls = pd.read_csv(input_path, encoding='utf-8', header=0, usecols=['link_aired'])
     urls = urls[urls['link_aired'].str.contains('facebook.com', na=False)]
-    
+
     # Initialize Chrome driver
     driver = init_chrome_driver()
     results = []
     total = len(urls)
     success_count = 0
     error_count = 0
-    bar_len = 50
-    processed_count = 0 # Initialize counter for progress
     print(f"Total links to process: {total}")
-    for idx, row in urls.iterrows():
+    # Modify loop to use enumerate with start=1
+    for idx, (original_idx, row) in enumerate(urls.iterrows(), 1):
         link = row['link_aired']
         try:
             res = process_link(driver, link)
@@ -153,15 +152,11 @@ def main():
             res = {'link': link, 'success': False, 'error': str(e)}
             error_count += 1
         results.append(res)
-        processed_count += 1 # Increment counter
-        percent = processed_count / total # Use counter for percentage
-        filled_len = int(bar_len * percent)
-        bar = '=' * filled_len + '-' * (bar_len - filled_len)
-        print(
-            f"[{bar}] {percent:.0%} | {processed_count}/{total} | Success: {success_count} | Error: {error_count}",
-            end='\r'
-        )
-    print()  # Newline after progress
+        # Implement the new progress printing method including success/error counts
+        percent = 100 * idx / total
+        print(f"\rProcessed: {idx}/{total} ({percent:.1f}%) | Success: {success_count} | Error: {error_count}", end='', flush=True)
+
+    print()  # Move to next line after completion
     driver.quit()
     df_results = pd.DataFrame(results)
     df_results['like_num'] = df_results['like'].apply(parse_number)
